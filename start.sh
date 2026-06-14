@@ -1,12 +1,18 @@
 #!/bin/bash
 
-echo "🚀 Starting X-UI Panel..."
+echo "🚀 Starting X-UI on port ${PORT}..."
 
-# تنظیم پورت از روی متغیر محیطی (اگر Railway تنظیم کرده باشد)
-if [ -n "$PORT" ]; then
-    sed -i "s/\"webPort\": [0-9]*/\"webPort\": $PORT/" /etc/x-ui/config.json 2>/dev/null || true
-fi
+# تنظیم پورت در فایل کانفیگ
+mkdir -p /etc/x-ui
+cat > /etc/x-ui/config.json << EOF
+{
+  "webPort": ${PORT},
+  "webBasePath": "/",
+  "webListen": "0.0.0.0",
+  "logLevel": "info"
+}
+EOF
 
 # اجرای X-UI
 cd /usr/local/x-ui
-exec ./x-ui
+./x-ui
